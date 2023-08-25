@@ -1,15 +1,18 @@
 from bs4 import BeautifulSoup
 import urllib.request as request
+from urllib.parse import quote
 from random import randint
+import re
 from PIL import Image
 
 
 def download_photo(word,number):
-    #define the search terms
+    
+    filename = re.sub(r'[<>:"/\\|?*]', '_', word+str(number))
 
 
     #search the selected word
-    url = 'https://images.search.yahoo.com/search/images?p=' + word
+    url = 'https://images.search.yahoo.com/search/images?p=' + quote(word,safe='')
 
     print(url)
 
@@ -23,7 +26,7 @@ def download_photo(word,number):
     for image in htmlData.find_all('img', class_=""):
         imgLink = image.get('src')
         if count == randomResult:
-            imageFile = open(f'images/{word}{number}.jpg', 'wb')
+            imageFile = open(f'images/{filename}.jpg', 'wb')
             imageFile.write(request.urlopen(imgLink).read())
             imageFile.close()
             print(f'image "{word}" downloaded')
@@ -33,13 +36,16 @@ def download_photo(word,number):
 
     
 
-    #enlarge the small image
-    imageFile = Image.open(f'images/{word}{number}.jpg')
+    # Change image size
+    try:
+        imageFile = Image.open(f'images/{filename}.jpg')
+    except FileNotFoundError:
+        imageFile = Image.open('missing-file.jpg')
     bigSize = (256, 256)
     bigImage = imageFile.resize(bigSize, Image.BILINEAR)
-    bigImage.save(f'images/{word}{number}.jpg')
+    bigImage.save(f'images/{filename}.jpg')
     print(f'image "{word}" edited')
 
 
 if __name__ == "__main__":
-    download_photo("image",1)
+    download_photo("damn+content+harvest",1)
