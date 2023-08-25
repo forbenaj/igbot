@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_intro_paragraph(url):
+def get_paragraph(url):
     response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -14,11 +14,13 @@ def get_intro_paragraph(url):
             for paragraph in paragraphs:
                 if paragraph.text.strip() and len(result) < 500:  # Ignore empty paragraphs
                     result += paragraph.get_text()
+        print(result)
         return result
     else:
+        print("Page not found")
         return "Page not found."
 
 if __name__ == "__main__":
     url = "https://en.wikipedia.org/wiki/Special:Random"
-    intro_paragraph = get_intro_paragraph(url)
+    intro_paragraph = get_paragraph(url)
     print(intro_paragraph)
