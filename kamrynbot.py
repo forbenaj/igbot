@@ -14,8 +14,6 @@ def download_photo(word,number):
     #search the selected word
     url = 'https://images.search.yahoo.com/search/images?p=' + quote(word,safe='')
 
-    print(url)
-
     #grab the html of the search result page
     page = request.urlopen(url)
     htmlData = BeautifulSoup(page, 'html.parser')
@@ -29,7 +27,6 @@ def download_photo(word,number):
             imageFile = open(f'images/{filename}.jpg', 'wb')
             imageFile.write(request.urlopen(imgLink).read())
             imageFile.close()
-            print(f'image "{word}" downloaded')
             break
         count += 1
 
@@ -39,12 +36,14 @@ def download_photo(word,number):
     # Change image size
     try:
         imageFile = Image.open(f'images/{filename}.jpg')
+        print(f'"{word}.jpg" downloaded')
     except FileNotFoundError:
         imageFile = Image.open('missing-file.jpg')
+        print(f'Couldn\'t download "{word}.jpg" ')
     bigSize = (256, 256)
     bigImage = imageFile.resize(bigSize, Image.BILINEAR)
     bigImage.save(f'images/{filename}.jpg')
-    print(f'image "{word}" edited')
+    
 
 
 if __name__ == "__main__":
