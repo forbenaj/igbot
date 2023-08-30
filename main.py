@@ -35,7 +35,7 @@ def seconds_to_time(seconds):
 
 
 cl = Client()
-cl.login("dumbass_bot", "panchos")
+cl.login("dumbass_bot", "Panchos1472!")
 
 
 while True:
@@ -98,5 +98,7 @@ while True:
             text = f"Seconds till next post: {seconds_to_time(waitTime-i)}"
             print(text, end='\r', flush=True)
             time.sleep(1)  # Wait for 1 second
-    except:
+    except Exception as e:
+        with open("log.txt", "w") as log:
+            log.write(str(e))
         os.system('shutdown /s /f /t 10')
