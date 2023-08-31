@@ -2,6 +2,7 @@ from instagrapi import Client
 import json
 import time
 import os
+import random
 
 def seconds_to_time(seconds):
     minutes = seconds // 60
@@ -18,7 +19,6 @@ text = ""
 
 posted = []
 
-waitTime = 60
 
 try:
     with open("posted.txt","r") as file:
@@ -28,26 +28,28 @@ except:
 
 
 # Get a list of direct threads
-threads = cl.direct_threads()
 
 # Define the username of the specific user you're interested in
 target_username = "forbenaj"
 
 # Find the thread associated with the specific user
 target_thread = None
-for thread in threads:
-    for user in thread.users:
-        if user.username == target_username:
-            target_thread = thread
-            break
-    if target_thread:
-        break
 
-if target_thread:
-    # Get the messages in the thread
-    messages = target_thread.messages
-    while True:
-        try:
+
+
+while True:
+    try:
+        threads = cl.direct_threads()
+        for thread in threads:
+            for user in thread.users:
+                if user.username == target_username:
+                    target_thread = thread
+                    break
+            if target_thread:
+                break
+        if target_thread:
+            # Get the messages in the thread
+            messages = target_thread.messages
             for message in messages:
                 if message.item_type == "clip":
                     media = message.clip
@@ -61,18 +63,19 @@ if target_thread:
             with open("posted.txt","w") as file:
                 json.dump(posted,file)
             print("saved")
+            waitTime = random.randint(2,30)
             for i in range(1,waitTime):
                 text = f"Seconds till next post: {seconds_to_time(waitTime-i)}"
                 print(text, end='\r', flush=True)
                 time.sleep(1)  # Wait for 1 second
-        except Exception as e:
-            with open("log.txt", "w") as log:
-                log.write(str(e))
-            os.system('shutdown /s /f /t 300')
-            cl.direct_send("Bro PC about to shutdown", thread_ids=[target_thread.id])
-
-else:
-    print("Thread with the specified user not found.")
+        else:
+            print("Thread with the specified user not found.")
+    except Exception as e:
+        with open("log.txt", "w") as log:
+            log.write(str(e))
+        os.system('shutdown /s /f /t 300')
+        cl.direct_send("Bro PC about to shutdown", thread_ids=[target_thread.id])
+        
 
 '''from instagrapi import Client
 
