@@ -12,7 +12,14 @@ def seconds_to_time(seconds):
 
 # Initialize the client and log in
 cl = Client()
-cl.login("powlowbot", "panchos")
+if os.path.exists("session.json"):
+    cl.load_settings("session.json")
+    print("Loaded session from file")
+else:
+    print("No session file found, creating new one")
+    cl.login("_arbot", "panchos")
+    cl.dump_settings("session.json")
+#tobiarbot yahoo
 
 media=None
 text = ""
@@ -73,8 +80,9 @@ while True:
     except Exception as e:
         with open("log.txt", "w") as log:
             log.write(str(e))
-        os.system('shutdown /s /f /t 300')
-        cl.direct_send("Bro PC about to shutdown", thread_ids=[target_thread.id])
+        print(e)
+        break
+        #cl.direct_send("Bro we got an error:\n"+str(e), thread_ids=[target_thread.id])
         
 
 '''from instagrapi import Client
